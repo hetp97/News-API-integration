@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>News Api</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<!-- <link rel="stylesheet" href="css/materialize.min.css"> -->
+	<style type="text/css">
+		.loader {
+			/*height: 100vh;*/
+			align-items: center;
+			display: flex;
+			justify-content: center;
+
+		}
+
+		.spinner-grow {
+			display: none;
+		}
+
+		.errorMsg {
+			font-size: 34px;
+			height: 100vh;
+			align-items: center;
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	
+		<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+		  <a class="navbar-brand" href="#">NEWS API</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <!-- <li class="nav-item active">
+		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="#">Link</a>
+		      </li> -->
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          Select News 
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <option class="dropdown-item" value="top-headlines">Top-Headlines</option>
+		          <option class="dropdown-item" value="everything" id="">Query</option>
+		          <div class="dropdown-divider"></div>
+		          <option class="dropdown-item">Both</option>
+		        </div>
+		      </li>
+		      <!-- <li class="nav-item">
+		        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+		      </li> -->
+		    </ul>
+		    <form action="#" class="form-inline my-2 my-lg-0">
+		      <input class="form-control mr-sm-2" type="search" onsubmit="news()" id="query" placeholder="Search for News" aria-label="Search">
+		      <input class="form-control mr-sm-2" type="search" placeholder="Enter country name" onsubmit="news()" id="country" name="">
+		      <button class="btn btn-outline-light my-2 my-sm-0" onclick="news()" value="Search" type="submit">Search</button>
+		    </form>
+		  </div>
+		</nav>
+
+
+	
+		
+
+	<div class="container-fluid mt-2">
+			<div class="loader">
+				<div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+				  <span class="sr-only">Loading...</span>
+				</div>
+			</div>
+		<div class="bd-example">
+				<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+					    <ol class="carousel-indicators">'
+					      <!-- <div id="carousalcontrol">
+					      	
+					      </div> -->
+					    </ol>
+					    <div class="carousel-inner" id="carousalResults">
+							<!-- <div >
+
+							</div> -->
+					  	</div>
+						    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+						      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						      <span class="sr-only">Previous</span>
+						    </a>
+						    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+						      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+						      <span class="sr-only">Next</span>
+						    </a>
+
+				</div>
+		</div>
+
+
+		<div class="row">
+			<div class="container mt-5">
+				<div class="card-columns">
+					<div id="newsResults">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/materialize.min.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<script type="text/javascript">
+	function news(){
+		$(document).ready(function () {
+		  var query=document.getElementById("query").value;
+		  var country=document.getElementById("country").value;
+		  alert('Submitted query is :'+query);
+		  alert('Submitted country is :'+country);
+  
+  	let url='http://newsapi.org/v2/everything?q='+query+'&from='+Date()+'&sortBy=popularity&apiKey=1f29e6b9bcf7406f9bc705e2f1e7b223';
+  	let url2='http://newsapi.org/v2/top-headlines?country='+country+'&q='+query+'&from='+Date()+'&sortBy=popularity&apiKey=1f29e6b9bcf7406f9bc705e2f1e7b223';
+ 
+  
+  // let url = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=dc57ef5c4b5b4de487d6b685bf401be9";
+
+  $.ajax({
+    url: url,
+    method: "GET",
+    dataType: "JSON",
+
+    beforeSend: function () {
+      $(".spinner-grow").show();
+    },
+
+    complete: function () {
+      $(".spinner-grow").hide();
+    },
+
+    success: function (newsdata) {
+      let output = "";
+      let latestNews = newsdata.articles;
+      for (var i in latestNews) {
+        output += `
+				  <div class="card">
+				    <img src="${latestNews[i].urlToImage}" class="card-img-top" alt="${latestNews[i].title}">
+				    <div class="card-body">
+				      <h5 class="card-title"><a href="${latestNews[i].url}" title="${latestNews[i].title}">${latestNews[i].title}</a></h5>
+				      <p class="card-text"><b>News source</b>: ${latestNews[i].source.name}</p>
+				      <p class="card-text"><b>Author</b>: ${latestNews[i].author} </p>
+				      <p class="card-text"><small class="text-muted"><b>Published</b>: ${latestNews[i].publishedAt}</small></p>
+				      <div class="row">
+					  	<button class="btn btn-primary mx-auto" type="button" data-toggle="collapse" data-target="#collapseExample${i}" aria-expanded="false" aria-controls="collapseExample">
+					    Description
+					  	</button>
+					  	<div class="collapse" id="collapseExample${i}">
+						  <div class="card card-body my-2">
+						    <p>${latestNews[i].description}</p>
+						  </div>
+						</div>
+					  	<a href="${latestNews[i].url}" target="_blank" class="btn btn-primary mx-auto">Read Article</a>
+					  </div>
+				    </div>
+				  </div>
+        `;
+      }
+
+
+
+      if (output !== "") {
+        $("#newsResults").html(output);
+      }
+
+    },
+
+    error: function () {
+      let errorMsg = `<div class="errorMsg center">Some error occured</div>`;
+      $("#newsResults").html(errorMsg);
+    }
+  })
+
+
+  $.ajax({
+    url: url2,
+    method: "GET",
+    dataType: "JSON",
+
+    // beforeSend: function () {
+    //   $(".spinner-grow").show();
+    // },
+
+    // complete: function () {
+    //   $(".spinner-grow").hide();
+    // },
+
+    success: function (newsdata) {
+      let output2 = "";
+      let output3 = "";
+      let hotnews = newsdata.articles;
+      for (var i in hotnews) {
+        if (i==0) {
+        	output3 +=`
+        		<li data-target="#carouselExampleCaptions" data-slide-to="${i}" class="active"></li>
+        	`;
+        	output2 += `
+				  
+					      <div class="carousel-item active">
+					        <img src="${hotnews[i].urlToImage}" class="d-block w-100" alt="${hotnews[i].title}">
+					        <div class="carousel-caption d-none d-md-block">
+					          <h5>${hotnews[i].title}</h5>
+					          <p class="card-text">${hotnews[i].description}</p>
+					        </div>
+					      </div>
+        `;
+        }
+        	output3 +=`
+					      <li data-target="#carouselExampleCaptions" data-slide-to="${i}"></li>
+        	`;
+        	output2 += `
+				  
+					      <div class="carousel-item">
+					        <img src="${hotnews[i].urlToImage}" class="d-block w-100" alt="${hotnews[i].title}">
+					        <div class="carousel-caption d-none d-md-block">
+					          <h5>${hotnews[i].title}</h5>
+					          <p class="card-text">${hotnews[i].description}</p>
+					        </div>
+					      </div>
+        `;
+      }
+
+
+
+      if (output2 !== "" && output3 !=="") {
+      	$("#carousalcontrol").html(output3);
+        $("#carousalResults").html(output2);
+      }
+
+    },
+
+    error: function () {
+      let errorMsg = `<div class="errorMsg center">Some error occured</div>`;
+      $("#carousalResults").html(errorMsg);
+    }
+  })
+
+});
+	}
+
+
+		
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>News article search</title>
+</head>
+<body>
+<form>
+	<input type="text" id="query" name="">
+	<input type="button" onclick="news()" value="Search">
+</form>
+</body>
+</html>
+<script>
+function news(){
+	'use strict';
+	var query=document.getElementById("query").value;
+	alert('Submitted query is :'+query);
+	var url='http://newsapi.org/v2/everything?q='+query+'&from='+Date()+'&sortBy=popularity&apiKey=8b78c67162cc4d01abdbf898ac82a6b2';
+	(async () => {
+	let response = await fetch(url);
+
+	let text = await response.json(); // read response body as text
+
+	alert(text + '...');
+	// document.write(Date());
+	document.body.innerHTML = "";
+	document.body.appendChild(document.createTextNode(JSON.stringify(text, null, "\n")));
+	// document.write(JSON.stringify(text, null, "\t"));
+
+
+	})()
+
+	
+}
+
+</script>

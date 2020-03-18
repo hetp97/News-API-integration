@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>News Api</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="css/materialize.min.css">
+	<style type="text/css">
+		#loader {
+			height: 100vh;
+			align-items: center;
+			display: flex;
+			justify-content: center;
+
+		}
+
+		.progress {
+			display: none;
+		}
+
+		.errorMsg {
+			font-size: 34px;
+			height: 100vh;
+			align-items: center;
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	
+		<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+		  <a class="navbar-brand" href="#">Navbar</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="#">Link</a>
+		      </li>
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          Dropdown
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="#">Action</a>
+		          <a class="dropdown-item" href="#">Another action</a>
+		          <div class="dropdown-divider"></div>
+		          <a class="dropdown-item" href="#">Something else here</a>
+		        </div>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+		      </li>
+		    </ul>
+		    <form class="form-inline my-2 my-lg-0">
+		      <input class="form-control mr-sm-2" type="search" onsubmit="news()" id="query" placeholder="Search for News" aria-label="Search">
+		      <button class="btn btn-outline-light my-2 my-sm-0" onclick="news()" type="submit">Search</button>
+		    </form>
+		  </div>
+		</nav>
+
+
+	<div class="container-fluid">
+		<!-- <h4>Please Access the <b>app.js</b> and replace that fake Api key with your own api key.</h4> -->
+		<form action="#">
+			<input type="text" placeholder="Search News" onsubmit="news()" id="query" name="">
+			<input type="text" placeholder="Enter country name" onsubmit="news()" id="country" name="">
+			<input type="submit" class="btn btn-outline-success" onclick="news()" value="Search">
+		</form>
+		<div class="row">
+			<div id="newsResults"></div>
+		</div>
+
+		<div id="loader">
+			<div class="progress">
+				<div class="indeterminate"></div>
+			</div>
+			<!-- <div class="progress">
+			  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+			</div> -->
+		</div>
+
+	</div>
+
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/materialize.min.js"></script>
+	<!-- <script src="js/app.js"></script> -->
+	<script type="text/javascript">
+	function news(){
+		$(document).ready(function () {
+  var query=document.getElementById("query").value;
+  var country=document.getElementById("country").value;
+  alert('Submitted query is :'+query);
+  alert('Submitted country is :'+country);
+  // let url='http://newsapi.org/v2/everything?country=in&q='+query+'&from='+Date()+'&sortBy=popularity&apiKey=8b78c67162cc4d01abdbf898ac82a6b2';
+  let url='http://newsapi.org/v2/top-headlines?country='+country+'&q='+query+'&from='+Date()+'&sortBy=popularity&apiKey=8b78c67162cc4d01abdbf898ac82a6b2';
+  // let url = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=dc57ef5c4b5b4de487d6b685bf401be9";
+
+  $.ajax({
+    url: url,
+    method: "GET",
+    dataType: "JSON",
+
+    beforeSend: function () {
+      $(".progress").show();
+    },
+
+    complete: function () {
+      $(".progress").hide();
+    },
+
+    success: function (newsdata) {
+      let output = "";
+      let latestNews = newsdata.articles;
+      for (var i in latestNews) {
+        output += `
+          <div class="card-group">
+          <div class="card hoverable" style="width: 18rem;">
+            <div class="card-image">
+              <img src="${latestNews[i].urlToImage}" class="responsive-img" alt="${latestNews[i].title}">
+            </div>
+            <div class="card-content">
+              <span class="card-title activator"><i class="material-icons right">more_vert</i></span>
+              <h6 class="truncate">Title: <a href="${latestNews[i].url}" title="${latestNews[i].title}">${latestNews[i].title}</a></h6>
+              <p><b>Author</b>: ${latestNews[i].author} </p>
+              <p><b>News source</b>: ${latestNews[i].source.name} </p>
+              <p><b>Published</b>: ${latestNews[i].publishedAt} </p>
+            </div>
+
+            <div class="card-reveal">
+              <span class="card-title"><i class="material-icons right">close</i></span>
+              <p><b>Description</b>: ${latestNews[i].description}</p>
+            </div>
+
+            <div class="card-action">
+              <a href="${latestNews[i].url}" target="_blank" class="btn">Read More</a>
+            </div>
+           </div>
+          </div>
+        `;
+      }
+
+      if (output !== "") {
+        $("#newsResults").html(output);
+      }
+
+    },
+
+    error: function () {
+      let errorMsg = `<div class="errorMsg center">Some error occured</div>`;
+      $("#newsResults").html(errorMsg);
+    }
+  })
+
+});
+	}
+
+
+		
+	</script>
+</body>
+
+</html>
